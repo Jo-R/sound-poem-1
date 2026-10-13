@@ -19,7 +19,7 @@ if (window.innerWidth < window.innerHeight) {
 }
 camera.position.y = 1;
 const canvas = document.getElementById("practice");
-const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.style.margin = "0";
