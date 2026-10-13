@@ -13,6 +13,7 @@ const camera = new THREE.PerspectiveCamera(
   100,
 );
 camera.position.z = 6;
+camera.position.y = 1;
 const canvas = document.getElementById("practice");
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -35,6 +36,13 @@ const circleB = new THREE.Mesh(
 );
 circleB.position.x = 1.75;
 scene.add(circleB);
+
+const circleC = new THREE.Mesh(
+  geometry,
+  new THREE.MeshBasicMaterial({ color: "green", wireframe: true }),
+);
+circleC.position.y = 2;
+scene.add(circleC);
 
 // ---------- Web Audio setup ----------
 let audioCtx = null;
@@ -61,8 +69,11 @@ async function startAudio() {
   source.connect(analyser);
   analyser.connect(audioCtx.destination);
   source.start();
+}
 
-  hint.remove();
+async function stopAudio() {
+  audioCtx.suspend();
+  started = false;
 }
 
 // Returns the average level (0..1) for a frequency range in Hz.
@@ -81,22 +92,24 @@ function getBandLevel(minHz, maxHz) {
 
 // Browsers block audio until the user interacts with the page.
 const hint = document.createElement("div");
-hint.textContent = "Click to start audio";
+hint.textContent = "Mouse click/touch screen to stop and start audio";
 Object.assign(hint.style, {
   position: "fixed",
   inset: "0",
   display: "grid",
-  placeItems: "center",
+  placeItems: "top",
   color: "#fff",
   font: "20px sans-serif",
   cursor: "pointer",
 });
 document.body.appendChild(hint);
-window.addEventListener(
-  "pointerdown",
-  () => startAudio().catch(console.error),
-  { once: true },
-);
+window.addEventListener("pointerdown", () => {
+  if (!started) {
+    startAudio().catch(console.error);
+  } else {
+    stopAudio().catch(console.error);
+  }
+});
 
 // ---------- Animation loop ----------
 const clock = new THREE.Clock();
@@ -107,6 +120,7 @@ function animate() {
   if (analyser) analyser.getByteFrequencyData(freqData);
 
   const bass = getBandLevel(20, 250);
+  const mids = getBandLevel(252, 1999);
   const treble = getBandLevel(2000, 8000);
 
   // Circle A: scale pulses with bass.
@@ -120,6 +134,11 @@ function animate() {
   circleB.scale.lerp(new THREE.Vector3(scaleB, scaleB, 1), 0.3);
   circleB.rotation.x = Math.sin(t * 3) * treble * 2.5;
   circleB.material.color.setHSL(0.75 + treble * 0.2, 0.8, 0.4 + treble * 0.4);
+
+  const scalec = 1 + mids * 2;
+  circleC.scale.lerp(new THREE.Vector3(scalec, scalec, 1), 0.3);
+  circleC.rotation.x = Math.sin(t * 3) * mids * 2.5;
+  circleC.material.color.setHSL(0.55 + mids * 0.2, 0.8, 0.4 + mids * 0.4);
 
   renderer.render(scene, camera);
 }
