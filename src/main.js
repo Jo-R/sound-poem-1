@@ -12,7 +12,11 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100,
 );
-camera.position.z = 6;
+if (window.innerWidth < window.innerHeight) {
+  camera.position.z = 10;
+} else {
+  camera.position.z = 6;
+}
 camera.position.y = 1;
 const canvas = document.getElementById("practice");
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
@@ -150,10 +154,4 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  if (window.innerWidth < window.innerHeight) {
-    camera.position.z = 6 / camera.aspect;
-  } else {
-    camera.position.z = 6;
-  }
 });
