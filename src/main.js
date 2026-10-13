@@ -1,7 +1,6 @@
 import * as THREE from "three";
 
-// Files in Vite's /public folder are served from the root.
-const AUDIO_URL = "/conversation-clips.wav";
+const AUDIO_URL = "/conversation-clips.mp3";
 
 // ---------- Three.js setup ----------
 const scene = new THREE.Scene();
@@ -21,18 +20,18 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.style.margin = "0";
 document.body.appendChild(renderer.domElement);
 
-const geometry = new THREE.CircleGeometry(1, 64);
+const geometry = new THREE.SphereGeometry(1, 64);
 
 const circleA = new THREE.Mesh(
   geometry,
-  new THREE.MeshBasicMaterial({ color: 0xff3366 }),
+  new THREE.MeshBasicMaterial({ color: "green", wireframe: true }),
 );
 circleA.position.x = -1.75;
 scene.add(circleA);
 
 const circleB = new THREE.Mesh(
   geometry,
-  new THREE.MeshBasicMaterial({ color: 0x33ccff }),
+  new THREE.MeshBasicMaterial({ color: "green", wireframe: true }),
 );
 circleB.position.x = 1.75;
 scene.add(circleB);
@@ -113,13 +112,14 @@ function animate() {
   // Circle A: scale pulses with bass.
   const scaleA = 1 + bass * 1.5;
   circleA.scale.lerp(new THREE.Vector3(scaleA, scaleA, 1), 0.3);
-  circleA.material.color.setHSL(0.95 - bass * 0.2, 0.8, 0.4 + bass * 0.3);
+  circleA.rotation.x = Math.sin(t * 2) * bass * 1.5;
+  circleA.material.color.setHSL(0.35 - bass * 0.2, 0.8, 0.4 + bass * 0.3);
 
   // Circle B: bobs and brightens with treble.
   const scaleB = 1 + treble * 2;
   circleB.scale.lerp(new THREE.Vector3(scaleB, scaleB, 1), 0.3);
-  circleB.position.y = Math.sin(t * 2) * treble * 1.5;
-  circleB.material.color.setHSL(0.55 + treble * 0.2, 0.8, 0.4 + treble * 0.4);
+  circleB.rotation.x = Math.sin(t * 3) * treble * 2.5;
+  circleB.material.color.setHSL(0.75 + treble * 0.2, 0.8, 0.4 + treble * 0.4);
 
   renderer.render(scene, camera);
 }
