@@ -150,4 +150,10 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  if (window.innerWidth < window.innerHeight) {
+    camera.position.z = 6 / camera.aspect;
+  } else {
+    camera.position.z = 6;
+  }
 });
