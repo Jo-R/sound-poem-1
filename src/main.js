@@ -13,7 +13,7 @@ const camera = new THREE.PerspectiveCamera(
   100,
 );
 if (window.innerWidth < window.innerHeight) {
-  camera.position.z = 10;
+  camera.position.z = 8;
 } else {
   camera.position.z = 6;
 }
@@ -128,20 +128,20 @@ function animate() {
   const treble = getBandLevel(2000, 8000);
 
   // Circle A: scale pulses with bass.
-  const scaleA = 1 + bass * 1.5;
+  const scaleA = 1 + bass * 0.5;
   circleA.scale.lerp(new THREE.Vector3(scaleA, scaleA, 1), 0.3);
-  circleA.rotation.x = Math.sin(t * 2) * bass * 1.5;
+  circleA.rotation.x = Math.sin(t * 2) * bass * 2;
   circleA.material.color.setHSL(0.35 - bass * 0.2, 0.8, 0.4 + bass * 0.3);
 
   // Circle B: bobs and brightens with treble.
-  const scaleB = 1 + treble * 2;
+  const scaleB = 1 + treble * 1.5;
   circleB.scale.lerp(new THREE.Vector3(scaleB, scaleB, 1), 0.3);
-  circleB.rotation.x = Math.sin(t * 3) * treble * 2.5;
-  circleB.material.color.setHSL(0.75 + treble * 0.2, 0.8, 0.4 + treble * 0.4);
+  circleB.rotation.x = Math.sin(t * 1) * treble * 2.5;
+  circleB.material.color.setHSL(0.75 + treble * 0.2, 0.8, 0.4 + treble * 0.8);
 
-  const scalec = 1 + mids * 2;
-  circleC.scale.lerp(new THREE.Vector3(scalec, scalec, 1), 0.3);
-  circleC.rotation.x = Math.sin(t * 3) * mids * 2.5;
+  const scalec = 1 + mids * 1.5;
+  circleC.scale.lerp(new THREE.Vector3(scalec, scalec, 1), 0.2);
+  circleC.rotation.y = Math.sin(t * 3) * mids * 2.5;
   circleC.material.color.setHSL(0.55 + mids * 0.2, 0.8, 0.4 + mids * 0.4);
 
   renderer.render(scene, camera);
@@ -154,4 +154,9 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  if (window.innerWidth < window.innerHeight) {
+    camera.position.z = 8;
+  } else {
+    camera.position.z = 6;
+  }
 });
